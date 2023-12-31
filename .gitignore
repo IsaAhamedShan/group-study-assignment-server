@@ -1,0 +1,59 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.env
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# Dependency directories
+/node_modules
+
+# Environment files
+.env
+
+# Build artifacts
+/build
+/dist
+
+# Log files
+/logs
+
+# User-specific files
+*.log
+*.pid
+*.seed
+*.pid.lock
+.DS_Store
+
+# Compiled binary addons
+/build/Release
+/build/Debug
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Coverage directory
+/coverage
+
+# Yarn integrity file
+.yarn-integrity
+
