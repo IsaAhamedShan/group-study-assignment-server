@@ -29,9 +29,12 @@ dist-ssr
 # Environment files
 .env
 
+/node_modules/
+
 # Build artifacts
 /build
 /dist
+
 
 # Log files
 /logs
