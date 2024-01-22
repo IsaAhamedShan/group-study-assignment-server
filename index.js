@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const helmet = require("helmet");
 var jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
 const port = process.env.PORT || 5000;
 app.use(
@@ -263,6 +264,41 @@ async function run() {
       const totalDocCount = assignmentCount.toString();
       // console.log(response)
       res.send({ totalDocCount, docCountAfterCreationUser });
+    });
+    app.post("/emailSend", async (req, res) => {
+      const { email, subject, description } = req.body;
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "nodemailerbyshan@gmail.com",
+          pass: "vkpmllesdutehecz",
+        },
+      });
+
+      const mailOptions = {
+        from: 'nodemailerbyshan@gmail.com',
+        to: 'isaahmedshan190138@gmail.com',
+        'Sender Email':email,
+        subject: subject,
+        text: `This is ${email}.${description}`,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions,(error,info)=>{
+          if(error){
+            console.log("send mail failed: " + error)
+          }
+          else{
+            console.log("send mail success: " +info.response)
+          }
+        }
+        );
+        res.status(200).send("Email sent successfully");
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error sending email");
+      }
     });
 
     //PATCH METHODS
