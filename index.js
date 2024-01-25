@@ -169,26 +169,15 @@ async function run() {
     app.post("/users", async (req, res) => {
       try {
         const data = req.body;
-        // console.log(data);
+        console.log("user data: ", data);
         const query = { email: data.email };
-        const findExist = await user_Collection_Group_Study_Assignment.find(
-          query
-        );
-        if (!findExist) {
-          const result = await user_Collection_Group_Study_Assignment.insertOne(
-            data
-          );
-        }
 
-        // console.log(
-        //   `A document was inserted with the _id: ${result.insertedId}.and the data is ${data}`
-        // );
+        await user_Collection_Group_Study_Assignment.insertOne(data);
+        console.log(`A document was inserted.`);
 
         res.status(201).json({
           success: true,
           message: "User inserted successfully",
-          insertedId: result.insertedId,
-          data: data,
         });
       } catch (error) {
         console.error("Error inserting user:", error);
@@ -204,9 +193,9 @@ async function run() {
       console.log(data);
 
       const result = await all_Assignment_Collection.insertOne(data);
-      // console.log(
-      //   `A document was inserted with the _id: ${result.insertedId}.and the data is ${result}`
-      // );
+      console.log(
+        `A document was inserted with the _id: ${result.insertedId}.and the data is ${result}`
+      );
     });
     app.post("/allAssignmentSubmitList", async (req, res) => {
       const data = req.body;
@@ -277,23 +266,21 @@ async function run() {
       });
 
       const mailOptions = {
-        from: 'nodemailerbyshan@gmail.com',
-        to: 'isaahmedshan190138@gmail.com',
-        'Sender Email':email,
+        from: "nodemailerbyshan@gmail.com",
+        to: "isaahmedshan190138@gmail.com",
+        "Sender Email": email,
         subject: subject,
         text: `This is ${email}.${description}`,
       };
 
       try {
-        await transporter.sendMail(mailOptions,(error,info)=>{
-          if(error){
-            console.log("send mail failed: " + error)
+        await transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log("send mail failed: " + error);
+          } else {
+            console.log("send mail success: " + info.response);
           }
-          else{
-            console.log("send mail success: " +info.response)
-          }
-        }
-        );
+        });
         res.status(200).send("Email sent successfully");
       } catch (error) {
         console.error(error);
