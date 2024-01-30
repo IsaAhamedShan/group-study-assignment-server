@@ -171,9 +171,12 @@ async function run() {
         const data = req.body;
         console.log("user data: ", data);
         const query = { email: data.email };
+        const response = await user_Collection_Group_Study_Assignment.find(query)
+        if(!response){
+          await user_Collection_Group_Study_Assignment.insertOne(data);
+          console.log(`A document was inserted.`);
+        }
 
-        await user_Collection_Group_Study_Assignment.insertOne(data);
-        console.log(`A document was inserted.`);
 
         res.status(201).json({
           success: true,
