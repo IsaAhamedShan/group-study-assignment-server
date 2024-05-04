@@ -264,7 +264,7 @@ async function run() {
         service: "gmail",
         auth: {
           user: "nodemailerbyshan@gmail.com",
-          pass: "vkpmllesdutehecz",
+          pass: process.env.NODEMAILER_PASS
         },
       });
 
