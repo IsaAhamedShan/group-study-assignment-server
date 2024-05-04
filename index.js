@@ -273,7 +273,7 @@ async function run() {
         to: "isaahmedshan190138@gmail.com",
         "Sender Email": email,
         subject: subject,
-        text: `This is ${email}.${description}`,
+        text: `This is from${email}.${description}.`,
       };
 
       try {
