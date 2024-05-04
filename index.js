@@ -24,7 +24,10 @@ app.use(
 );
 app.use(
   cors({
-    origin: ["http://localhost:5173",'https://group-study-assignment-a7832.web.app'],
+    origin: [
+      "http://localhost:5173",
+      "https://group-study-assignment-a7832.web.app",
+    ],
     credentials: true,
   })
 );
@@ -76,14 +79,6 @@ async function run() {
     };
     //get methods
     app.get("/allUsersList", async (req, res) => {
-      // console.log(
-      //   "req.query is : ",
-      //   req.query,
-      //   "\n",
-      //   "req.user is :",
-      //   req.user
-      // );
-
       const response = user_Collection_Group_Study_Assignment.find();
       const usersList = await response.toArray();
       // console.log(usersList);
@@ -130,25 +125,23 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     });
-    app.get(
-      "/usersLifeTimeSubmittedList/:id",
-      verifyToken,
-      async (req, res) => {
-        console.log("id is :", req.params.id);
-        // console.log("req.query is :", req.query);
-        if (req.user.email !== req.params.id) {
-          console.log("both email not same, logouting...");
-          res.status(403).send({ message: "Unauthorized" });
-        } else {
-          console.log("verified user.");
-        }
-        // console.log("req.user is :",req.user)
-        const query = { email: req.params.id };
-        const response = await all_Assignment_Submit_Collection.find(query);
-        const result = await response.toArray();
-        res.send(result);
+    app.get("/usersLifeTimeSubmittedList", verifyToken, async (req, res) => {
+      console.log("email is is :", req.query.email);
+      // console.log("req.query is :", req.query);
+      if (req.user.email !== req.query.email) {
+        console.log("both email not same, logouting...");
+        res.status(403).send({ message: "Unauthorized" });
+      } else {
+        console.log("verified user.");
       }
-    );
+      // console.log("req.user is :",req.user)
+      const query = { email: req.params.id };
+      const result = await all_Assignment_Submit_Collection
+        .find(query)
+        .toArray();
+
+      res.send(result);
+    });
 
     //post methods
     app.post("/jwt", async (req, res) => {
@@ -171,12 +164,13 @@ async function run() {
         const data = req.body;
         console.log("user data: ", data);
         const query = { email: data.email };
-        const response = await user_Collection_Group_Study_Assignment.find(query)
-        if(!response){
+        const response = await user_Collection_Group_Study_Assignment.find(
+          query
+        );
+        if (!response) {
           await user_Collection_Group_Study_Assignment.insertOne(data);
           console.log(`A document was inserted.`);
         }
-
 
         res.status(201).json({
           success: true,
@@ -264,7 +258,7 @@ async function run() {
         service: "gmail",
         auth: {
           user: "nodemailerbyshan@gmail.com",
-          pass: 'vkpmllesdutehecz'
+          pass: "vkpmllesdutehecz",
         },
       });
 
