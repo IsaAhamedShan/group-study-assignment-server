@@ -64,14 +64,14 @@ async function run() {
     const verifyToken = (req, res, next) => {
       const token = req.cookies?.token;
       if (!token) {
-        return res.status(401).send({ message: "Unauthorized" });
+        return res.status(401).send({ message: "Unauthorized.." });
       }
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decode) => {
         if (error) {
           res.status(401).send({ message: "Invalid Token" });
         }
         if (decode) {
-          console.log("decoded token in middleware: ", decode);
+          // console.log("decoded token in middleware: ", decode);
           req.user = decode;
           next();
         }
@@ -132,13 +132,14 @@ async function run() {
         console.log("both email not same, logouting...");
         res.status(403).send({ message: "Unauthorized" });
       } else {
-        console.log("verified user.");
+        console.log("verified user at /submittedAssignment/:id.");
       }
       // console.log("req.user is :",req.user)
-      const query = { email: req.params.id };
+      const query = { email: req.query.email };
       const result = await all_Assignment_Submit_Collection
         .find(query)
         .toArray();
+      // console.log(result)
 
       res.send(result);
     });
@@ -235,22 +236,77 @@ async function run() {
       // console.log(`A document was inserted with the _id: ${result.insertedId}`);
       res.send(result);
     });
-    app.get("/progressStatisticsCheck/:creationDate", async (req, res) => {
-      const creationtime = req.params.creationDate;
+    app.get("/progressStatisticsCheck", async (req, res) => {
+      //converting the time into int
+      const userCreationTime = parseInt(req.query.userCreationTime,10)
+      console.log(
+        "userCreationTime /progressStatisticsCheck:",
+        userCreationTime
+      );
 
-      console.log("creation time ", creationtime);
-      const firebaseCreationDate = new Date(parseInt(creationtime, 10));
-      // const query = {}
-      const response = await all_Assignment_Collection.countDocuments({
-        creationDate: { $gt: firebaseCreationDate.toISOString() },
-      });
-      const docCountAfterCreationUser = await response.toString();
+      const firebaseCreationDate = new Date(userCreationTime);
+      // console.log("firebaseCreationDate:", firebaseCreationDate);
 
-      const assignmentCount = await all_Assignment_Collection.countDocuments();
-      const totalDocCount = assignmentCount.toString();
-      // console.log(response)
-      res.send({ totalDocCount, docCountAfterCreationUser });
+      try {
+        const docCountAfterCreationUser =
+          await all_Assignment_Collection.countDocuments({
+            creationDate: { $gt: firebaseCreationDate.toISOString() },
+          });
+
+        const assignmentCount =
+          await all_Assignment_Collection.countDocuments();
+        const totalDocCount = assignmentCount.toString();
+        // console.log(
+        //   "total doc && doc after creation of user",
+        //   totalDocCount,
+        //   docCountAfterCreationUser
+        // );
+
+        res.send({
+          totalDocCount,
+          docCountAfterCreationUser: docCountAfterCreationUser.toString(),
+        });
+      } catch (error) {
+        console.error("Error while counting documents:", error);
+        res.status(500).send("Internal Server Error");
+      }
     });
+    // app.get("/progressStatisticsCheck", async (req, res) => {
+    //   const userCreationTime = parseInt(req.query.userCreationTime, 10);
+    //   console.log(
+    //     "userCreationTime /progressStatisticsCheck:",
+    //     userCreationTime
+    //   );
+
+    //   try {
+    //     // Convert userCreationTime to a Date object
+    //     const userCreationDate = new Date(userCreationTime);
+
+    //     // Convert each document's creationDate to milliseconds
+    //     const docCountAfterCreationUser =
+    //       await all_Assignment_Collection.countDocuments({
+    //         creationDate: { $gt: userCreationDate.toISOString() },
+    //       });
+
+    //     const assignmentCount =
+    //       await all_Assignment_Collection.countDocuments();
+    //     const totalDocCount = assignmentCount.toString();
+    //     console.log(
+    //       "total doc && doc after creation of user",
+    //       totalDocCount,
+    //       docCountAfterCreationUser
+    //     );
+
+    //     res.send({
+    //       totalDocCount,
+    //       docCountAfterCreationUser: docCountAfterCreationUser.toString(),
+    //     });
+    //   } catch (error) {
+    //     console.error("Error while counting documents:", error);
+    //     res.status(500).send("Internal Server Error");
+    //   }
+    // });
+
     app.post("/emailSend", async (req, res) => {
       const { email, subject, description } = req.body;
 
