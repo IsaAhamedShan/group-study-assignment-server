@@ -45,9 +45,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const database_Group_Study_Assignment = await client.db(
-      "groupStudyAssignment"
-    );
+    const database_Group_Study_Assignment = client.db("groupStudyAssignment");
     const user_Collection_Group_Study_Assignment =
       database_Group_Study_Assignment.collection("users");
     const all_Assignment_Collection =
@@ -81,7 +79,7 @@ async function run() {
     app.get("/allUsersList", async (req, res) => {
       const response = user_Collection_Group_Study_Assignment.find();
       const usersList = await response.toArray();
-      // console.log(usersList);
+      console.log(usersList);
       res.send(usersList);
     });
     app.get("/allAssignment", async (req, res) => {
@@ -165,18 +163,28 @@ async function run() {
         const data = req.body;
         console.log("user data: ", data);
         const query = { email: data.email };
-        const response = await user_Collection_Group_Study_Assignment.find(
-          query
-        );
-        if (!response) {
-          await user_Collection_Group_Study_Assignment.insertOne(data);
-          console.log(`A document was inserted.`);
+        const response = await user_Collection_Group_Study_Assignment
+          .find(query)
+          .toArray();
+        console.log("🚀 ~ app.post ~ response:", response);
+        if (response.length === 0) {
+          const insertRes =
+            await user_Collection_Group_Study_Assignment.insertOne(data);
+            // console.log(insertRes)
+          if (insertRes.insertedId) {
+            console.log(`A document was inserted.`);
+            res.status(201).json({
+              success: true,
+              message: "User inserted successfully",
+            });
+          } else {
+            console.log("not inserted");
+            res.status(500).json({
+              success: true,
+              message: "Failed to insert user",
+            });
+          }
         }
-
-        res.status(201).json({
-          success: true,
-          message: "User inserted successfully",
-        });
       } catch (error) {
         console.error("Error inserting user:", error);
         res.status(500).json({
@@ -238,7 +246,7 @@ async function run() {
     });
     app.get("/progressStatisticsCheck", async (req, res) => {
       //converting the time into int
-      const userCreationTime = parseInt(req.query.userCreationTime,10)
+      const userCreationTime = parseInt(req.query.userCreationTime, 10);
       console.log(
         "userCreationTime /progressStatisticsCheck:",
         userCreationTime
