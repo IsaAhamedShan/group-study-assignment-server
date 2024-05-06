@@ -27,6 +27,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://group-study-assignment-a7832.web.app",
+      
     ],
     credentials: true,
   })
