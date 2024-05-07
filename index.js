@@ -156,7 +156,7 @@ async function run() {
 
       res
         .cookie("token", token, {
-          httpOnly: true,
+          httpOnly: false, //care it was true while running in local
           secure: false,
         })
         .send({ success: true });
