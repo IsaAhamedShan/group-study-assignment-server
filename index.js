@@ -30,6 +30,7 @@ app.use(
       "https://group-study-assignment-a7832.web.app",
     ],
     credentials: true,
+    exposedHeaders: ["Set-Cookie"]
   })
 );
 app.use(express.json());
