@@ -22,7 +22,7 @@ app.use(
     },
   })
 );
-app.set("trust proxy", 1);
+// app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
@@ -30,7 +30,7 @@ app.use(
       "https://group-study-assignment-a7832.web.app",
     ],
     credentials: true,
-    exposedHeaders: ["Set-Cookie"]
+    // exposedHeaders: ["Set-Cookie"]
   })
 );
 app.use(express.json());
