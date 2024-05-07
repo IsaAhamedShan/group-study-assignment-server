@@ -66,9 +66,13 @@ async function run() {
     );
     // middleware
 
-    const verifyToken = (req, res, next) => {
-      const token = req.cookies?.token;
-      console.log(req.cookies);
+    const verifyToken = async (req, res, next) => {
+      // console.log("re url: ", req.originalUrl)
+      // console.log("inside verify token. req.headers is: ", req.headers);
+// 
+     
+      const token = await req.headers.authorization.split(" ")[1];
+      console.log(token.split(" ")[1]);
       if (!token) {
         return res.status(401).send({ message: "Unauthorized.." });
       }
@@ -159,13 +163,7 @@ async function run() {
       });
       console.log("token is :", token);
 
-      res
-        .cookie("token", token, {
-          httpOnly: false, //care it was true while running in local
-          secure: true,
-          sameSite:'none'
-        })
-        .send({ success: true });
+      res.status(200).send({ token: token });
     });
     app.post("/users", async (req, res) => {
       try {
