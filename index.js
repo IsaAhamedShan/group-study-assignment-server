@@ -17,7 +17,7 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         frameAncestors: ["'self'"],
         formAction: ["'self'"],
-        connectSrc: ["'self'", "car-doctor-server-sigma-two.vercel.app"],
+        connectSrc: ["'self'", "https://group-study-assignment-a7832.web.app"],
       },
     },
   })
@@ -27,7 +27,6 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://group-study-assignment-a7832.web.app",
-      
     ],
     credentials: true,
   })
@@ -62,12 +61,13 @@ async function run() {
 
     const verifyToken = (req, res, next) => {
       const token = req.cookies?.token;
+      console.log(req.cookies);
       if (!token) {
         return res.status(401).send({ message: "Unauthorized.." });
       }
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decode) => {
         if (error) {
-          res.status(401).send({ message: "Invalid Token" });
+          return res.status(401).send({ message: "Invalid Token" });
         }
         if (decode) {
           // console.log("decoded token in middleware: ", decode);
@@ -171,7 +171,7 @@ async function run() {
         if (response.length === 0) {
           const insertRes =
             await user_Collection_Group_Study_Assignment.insertOne(data);
-            // console.log(insertRes)
+          // console.log(insertRes)
           if (insertRes.insertedId) {
             console.log(`A document was inserted.`);
             res.status(201).json({
