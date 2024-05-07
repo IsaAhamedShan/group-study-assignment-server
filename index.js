@@ -162,7 +162,7 @@ async function run() {
       res
         .cookie("token", token, {
           httpOnly: false, //care it was true while running in local
-          secure: false,
+          secure: true,
           sameSite:'none'
         })
         .send({ success: true });
